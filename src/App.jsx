@@ -1,59 +1,74 @@
 import { useState, useEffect } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from './firebase'
-import clsx from 'clsx'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './firebase'
+import Navbar from './components/Navbar'
+import Home from './components/Home'
+import About from './components/About'
+import Projects from './components/Projects'
+import Contact from './components/Contact'
+import Login from './components/Login'
+import AdminPage from './components/AdminPage'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [firebaseStatus, setFirebaseStatus] = useState('Connecting...')
+  const [user, setUser] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [isAdminRoute, setIsAdminRoute] = useState(false)
 
   useEffect(() => {
-    const testFirebaseConnection = async () => {
-      try {
-        // Try to read from a test collection
-        const testCollection = collection(db, 'test')
-        await getDocs(testCollection)
-        setFirebaseStatus('✅ Firebase Connected Successfully!')
-      } catch (error) {
-        console.error('Firebase connection error:', error)
-        setFirebaseStatus('❌ Firebase Connection Failed')
-      }
-    }
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user)
+      setLoading(false)
+    })
 
-    testFirebaseConnection()
+    return () => unsubscribe()
   }, [])
 
-  return (
-    <div className={clsx('min-h-screen', 'bg-gray-100', 'dark:bg-gray-900', 'flex', 'items-center', 'justify-center')}>
-      <div className={clsx('text-center', 'p-8', 'bg-white', 'dark:bg-gray-800', 'rounded-lg', 'shadow-lg', 'max-w-md')}>
-        <h1 className={clsx('text-4xl', 'font-bold', 'text-blue-600', 'dark:text-blue-400', 'mb-4')}>
-          Portfolio Website
-        </h1>
-        <p className={clsx('text-gray-700', 'dark:text-gray-300', 'mb-6')}>
-          React + Tailwind + Firebase
-        </p>
-        
-        {/* Firebase Status */}
-        <div className={clsx('p-4', 'bg-gray-50', 'dark:bg-gray-700', 'rounded-lg', 'mb-6')}>
-          <p className={clsx('text-lg', 'font-medium', 'text-gray-800', 'dark:text-gray-200')}>
-            {firebaseStatus}
-          </p>
-        </div>
+  useEffect(() => {
+    // Check if URL is admin route
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1)
+      setIsAdminRoute(hash === 'admin')
+    }
 
-        {/* Counter */}
-        <button 
-          onClick={() => setCount(count + 1)}
-          className={clsx('bg-blue-500', 'hover:bg-blue-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded', 'mb-4')}
-        >
-          Count: {count}
-        </button>
+    handleHashChange()
+    window.addEventListener('hashchange', handleHashChange)
+    
+    return () => window.removeEventListener('hashchange', handleHashChange)
+  }, [])
 
-        {/* Project Info */}
-        <div className={clsx('mt-6', 'text-sm', 'text-gray-500', 'dark:text-gray-400')}>
-          <p>Project ID: {import.meta.env.VITE_FIREBASE_PROJECT_ID}</p>
+  const handleLoginSuccess = () => {
+    window.location.hash = 'admin'
+    setIsAdminRoute(true)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
         </div>
       </div>
+    )
+  }
+
+  // Admin route - requires authentication
+  if (isAdminRoute) {
+    if (!user) {
+      return <Login onLoginSuccess={handleLoginSuccess} />
+    }
+    return <AdminPage />
+  }
+
+  // Public single-page scrollable website
+  return (
+    <div className="scroll-smooth">
+      <Navbar />
+      <Home />
+      <About />
+      <Projects />
+      <Contact />
     </div>
   )
 }
