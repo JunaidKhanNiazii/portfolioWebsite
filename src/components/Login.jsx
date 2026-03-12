@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../firebase'
+import { useTheme } from '../context/ThemeContext'
 import clsx from 'clsx'
 
 function Login({ onLoginSuccess }) {
+  const { theme, toggleTheme } = useTheme()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -26,7 +28,20 @@ function Login({ onLoginSuccess }) {
   }
 
   return (
-    <div className={clsx('min-h-screen', 'bg-gray-100', 'dark:bg-gray-900', 'flex', 'items-center', 'justify-center')}>
+    <div className={clsx('min-h-screen', 'bg-gray-100', 'dark:bg-gray-900', 'flex', 'items-center', 'justify-center', 'relative')}>
+      {/* Theme Toggle Button */}
+      <button
+        onClick={toggleTheme}
+        className={clsx(
+          'absolute', 'top-4', 'right-4', 'p-3', 'rounded-lg',
+          'bg-gray-200', 'dark:bg-gray-700',
+          'hover:bg-gray-300', 'dark:hover:bg-gray-600', 'transition-colors'
+        )}
+        aria-label="Toggle theme"
+      >
+        {theme === 'light' ? '🌙' : '☀️'}
+      </button>
+      
       <div className={clsx('bg-white', 'dark:bg-gray-800', 'p-8', 'rounded-lg', 'shadow-lg', 'w-full', 'max-w-md')}>
         <h2 className={clsx('text-2xl', 'font-bold', 'text-center', 'text-gray-800', 'dark:text-white', 'mb-6')}>
           Admin Login

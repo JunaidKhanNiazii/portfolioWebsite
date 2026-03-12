@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { signOut } from 'firebase/auth'
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { auth, db } from '../firebase'
+import { useTheme } from '../context/ThemeContext'
 import clsx from 'clsx'
 
 function AdminPage() {
+  const { theme, toggleTheme } = useTheme()
   const [projects, setProjects] = useState([])
   const [contacts, setContacts] = useState([])
   const [activeTab, setActiveTab] = useState('projects')
@@ -217,15 +219,28 @@ function AdminPage() {
               </div>
             </div>
 
-            <button
-              onClick={handleLogout}
-              className={clsx(
-                'bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold',
-                'py-2', 'px-4', 'rounded', 'transition-colors'
-              )}
-            >
-              Logout
-            </button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={toggleTheme}
+                className={clsx(
+                  'p-2', 'rounded-lg', 'bg-gray-200', 'dark:bg-gray-700',
+                  'hover:bg-gray-300', 'dark:hover:bg-gray-600', 'transition-colors'
+                )}
+                aria-label="Toggle theme"
+              >
+                {theme === 'light' ? '🌙' : '☀️'}
+              </button>
+              
+              <button
+                onClick={handleLogout}
+                className={clsx(
+                  'bg-red-500', 'hover:bg-red-700', 'text-white', 'font-bold',
+                  'py-2', 'px-4', 'rounded', 'transition-colors'
+                )}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </nav>

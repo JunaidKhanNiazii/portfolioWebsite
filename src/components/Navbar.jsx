@@ -1,6 +1,9 @@
 import clsx from 'clsx'
+import { useTheme } from '../context/ThemeContext'
 
 function Navbar({ onNavigate }) {
+  const { theme, toggleTheme } = useTheme()
+  
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About' },
@@ -23,19 +26,33 @@ function Navbar({ onNavigate }) {
             Portfolio
           </div>
           
-          <div className={clsx('flex', 'space-x-6')}>
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={clsx(
-                  'text-gray-700', 'dark:text-gray-300', 'hover:text-blue-600', 'dark:hover:text-blue-400',
-                  'font-medium', 'transition-colors'
-                )}
-              >
-                {item.label}
-              </button>
-            ))}
+          <div className={clsx('flex', 'items-center', 'gap-6')}>
+            <div className={clsx('flex', 'space-x-6')}>
+              {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={clsx(
+                    'text-gray-700', 'dark:text-gray-300', 'hover:text-blue-600', 'dark:hover:text-blue-400',
+                    'font-medium', 'transition-colors'
+                  )}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className={clsx(
+                'p-2', 'rounded-lg', 'bg-gray-200', 'dark:bg-gray-700',
+                'hover:bg-gray-300', 'dark:hover:bg-gray-600', 'transition-colors'
+              )}
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
         </div>
       </div>
