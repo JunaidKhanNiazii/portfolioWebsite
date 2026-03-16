@@ -63,7 +63,7 @@ function App() {
 
   // Public single-page scrollable website
   return (
-    <div className="scroll-smooth">
+    <div>
       <Navbar />
       <Home />
       <About />
