@@ -6,14 +6,18 @@ import Home from './components/Home'
 import About from './components/About'
 import Projects from './components/Projects'
 import Contact from './components/Contact'
-import Login from './components/Login'
-import AdminPage from './components/AdminPage'
+import Login from './admin/Login'
+import AdminPage from './admin/AdminPage'
+import Footer from './components/Footer'
+import PrivacyPolicy from './components/PrivacyPolicy'
+import TermsAndConditions from './components/TermsAndConditions'
 import './App.css'
 
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
   const [isAdminRoute, setIsAdminRoute] = useState(false)
+  const [currentPage, setCurrentPage] = useState('home')
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -29,6 +33,9 @@ function App() {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1)
       setIsAdminRoute(hash === 'admin')
+      if (hash === 'privacy') setCurrentPage('privacy')
+      else if (hash === 'terms') setCurrentPage('terms')
+      else setCurrentPage('home')
     }
 
     handleHashChange()
@@ -53,6 +60,16 @@ function App() {
     )
   }
 
+  const goHome = () => {
+    window.location.hash = ''
+    setCurrentPage('home')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Privacy & Terms pages
+  if (currentPage === 'privacy') return <PrivacyPolicy onBack={goHome} />
+  if (currentPage === 'terms')   return <TermsAndConditions onBack={goHome} />
+
   // Admin route - requires authentication
   if (isAdminRoute) {
     if (!user) {
@@ -69,6 +86,7 @@ function App() {
       <About />
       <Projects />
       <Contact />
+      <Footer />
     </div>
   )
 }

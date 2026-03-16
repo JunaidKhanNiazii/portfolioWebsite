@@ -1,48 +1,199 @@
-import clsx from 'clsx'
+import { useTheme } from '../context/ThemeContext'
+import { useEffect, useRef, useState } from 'react'
 
-function About() {
+const aboutImage = 'src/assets/agile.webp'
+const aboutImage2 = 'https://www.amazing7.com/images/infographic%207%20step-01.jpg'
+
+const stats = [
+  {
+    label: 'Years of Experience', target: 2, suffix: '+',
+    icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="17" rx="2" fill="currentColor" fillOpacity="0.15"/><path d="M3 9h18M8 2v4M16 2v4M7 13h4v4H7z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  },
+  {
+    label: 'Projects Completed', target: 15, suffix: '+',
+    icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="2" fill="currentColor" fillOpacity="0.15"/><path d="M9 12l2 2 4-4M8 7h8M8 17h5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  },
+  {
+    label: 'Technologies', target: 10, suffix: '+',
+    icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" fill="currentColor" fillOpacity="0.15"/><path d="M8 12l-3 3 3 3M16 6l3 3-3 3M13 6l-2 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  },
+  {
+    label: 'Certifications', target: 5, suffix: '+',
+    icon: (<svg width="36" height="36" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="6" fill="currentColor" fillOpacity="0.15"/><path d="M12 3a6 6 0 100 12A6 6 0 0012 3zM8.5 21l1.5-4h4l1.5 4M10 17l2 2 2-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>),
+  },
+]
+
+const skills = [
+  { name: 'React.js',        level: 85 },
+  { name: 'JavaScript',      level: 80 },
+  { name: 'Node.js',         level: 70 },
+  { name: 'Python',          level: 75 },
+  { name: 'Machine Learning',level: 65 },
+  { name: 'Firebase',        level: 75 },
+  { name: 'Tailwind CSS',    level: 90 },
+]
+
+function useCounter(target, duration, triggered) {
+  const [count, setCount] = useState(0)
+  useEffect(() => {
+    if (!triggered) return
+    let current = 0
+    const step = Math.ceil(target / (duration / 16))
+    const timer = setInterval(() => {
+      current += step
+      if (current >= target) { setCount(target); clearInterval(timer) }
+      else setCount(current)
+    }, 16)
+    return () => clearInterval(timer)
+  }, [triggered, target, duration])
+  return count
+}
+
+function StatCard({ stat, triggered, t }) {
+  const count = useCounter(stat.target, 1200, triggered)
+  const [hovered, setHovered] = useState(false)
   return (
-    <section id="about" className={clsx('min-h-screen', 'bg-white', 'dark:bg-gray-800', 'py-12', 'px-4', 'flex', 'items-center')}>
-      <div className={clsx('max-w-4xl', 'mx-auto', 'w-full')}>
-        <h1 className={clsx('text-4xl', 'font-bold', 'text-blue-600', 'dark:text-blue-400', 'mb-8', 'text-center')}>
-          About Me
-        </h1>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        gap: '0.75rem', textAlign: 'center',
+        padding: '1.5rem 1rem',
+        borderRadius: '0.75rem',
+        backgroundColor: t.cardBg,
+        border: `1px solid ${t.border}`,
+        boxShadow: hovered ? t.statShadowHover : t.statShadow,
+        transform: hovered ? 'translateY(-6px)' : 'translateY(0)',
+        transition: 'all 0.3s ease',
+        cursor: 'default',
+      }}
+    >
+      <span style={{ color: t.iconColor }}>{stat.icon}</span>
+      <span style={{ fontSize: '2rem', fontWeight: 700, color: t.statValue, lineHeight: 1 }}>
+        {count}{stat.suffix}
+      </span>
+      <p style={{ color: t.body, fontSize: '0.88rem', margin: 0, lineHeight: 1.4 }}>{stat.label}</p>
+    </div>
+  )
+}
 
-        <div className={clsx('bg-gray-50', 'dark:bg-gray-700', 'rounded-lg', 'shadow-lg', 'p-8', 'mb-8')}>
-          <h2 className={clsx('text-2xl', 'font-bold', 'text-gray-800', 'dark:text-white', 'mb-4')}>
-            My Story
-          </h2>
-          <p className={clsx('text-gray-600', 'dark:text-gray-400', 'mb-4', 'leading-relaxed')}>
-            I'm a dedicated full-stack developer with a passion for creating innovative web solutions. 
-            My journey in software development started with a curiosity about how things work, 
-            and has evolved into a career focused on building impactful applications.
-          </p>
-          <p className={clsx('text-gray-600', 'dark:text-gray-400', 'leading-relaxed')}>
-            I specialize in modern web technologies including React, Node.js, and Firebase, 
-            and I'm always eager to learn new tools and frameworks to deliver the best solutions.
+export default function About() {
+  const { theme } = useTheme()
+  const dark = theme === 'dark'
+  const statsRef = useRef(null)
+  const [triggered, setTriggered] = useState(false)
+
+  const t = {
+    bg:              dark ? 'hsl(240,10%,5%)'  : 'hsl(220,20%,96%)',
+    cardBg:          dark ? 'hsl(240,10%,9%)'  : '#ffffff',
+    border:          dark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
+    heading:         dark ? 'hsl(220,12%,98%)' : 'hsl(240,10%,8%)',
+    subheading:      dark ? 'hsl(217,80%,65%)' : 'hsl(217,80%,50%)',
+    body:            dark ? 'hsl(220,12%,65%)' : 'hsl(220,10%,40%)',
+    skillBg:         dark ? 'hsl(240,10%,15%)' : 'hsl(220,15%,88%)',
+    skillFill:       'hsl(217,80%,55%)',
+    statValue:       'hsl(217,80%,55%)',
+    iconColor:       'hsl(217,80%,55%)',
+    shadow:          dark ? '0 8px 32px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.08)',
+    statShadow:      dark ? '0 2px 12px rgba(0,0,0,0.3)' : '0 2px 12px rgba(0,0,0,0.06)',
+    statShadowHover: dark ? '0 12px 32px rgba(0,0,0,0.5)' : '0 12px 32px rgba(59,130,246,0.15)',
+  }
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setTriggered(true) },
+      { threshold: 0.3 }
+    )
+    if (statsRef.current) observer.observe(statsRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  return (
+    <section id="about" style={{ backgroundColor: t.bg, padding: '6rem 0 5rem', transition: 'background-color 0.3s ease' }}>
+      <div style={{ maxWidth: '75rem', margin: '0 auto', padding: '0 1.5rem' }}>
+
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <p style={{ color: t.subheading, fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Who I Am</p>
+          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 2.75rem)', fontWeight: 700, color: t.heading, margin: '0 0 1rem', lineHeight: 1.2 }}>About Me</h2>
+          <p style={{ color: t.body, fontSize: '1.05rem', maxWidth: '42rem', margin: '0 auto', lineHeight: 1.7 }}>
+            A passionate Full-Stack Developer & AI Engineer from Pakistan, building intelligent web applications, solving real-world problems with clean code and modern technology.
           </p>
         </div>
 
-        <div className={clsx('bg-gray-50', 'dark:bg-gray-700', 'rounded-lg', 'shadow-lg', 'p-8')}>
-          <h2 className={clsx('text-2xl', 'font-bold', 'text-gray-800', 'dark:text-white', 'mb-6')}>
-            Skills
-          </h2>
-          <div className={clsx('grid', 'grid-cols-2', 'md:grid-cols-3', 'gap-4')}>
-            {['React', 'JavaScript', 'Node.js', 'Firebase', 'Tailwind CSS', 'Git'].map((skill) => (
-              <div 
-                key={skill}
-                className={clsx('bg-blue-50', 'dark:bg-blue-900', 'p-4', 'rounded-lg', 'text-center')}
-              >
-                <span className={clsx('text-blue-800', 'dark:text-blue-200', 'font-semibold')}>
-                  {skill}
-                </span>
+        {/* Images — two side by side */}
+        <div className="images-grid" style={{ marginBottom: '2rem' }}>
+          <div style={{ borderRadius: '1rem', overflow: 'hidden', boxShadow: t.shadow }}>
+            <img src={aboutImage} alt="7-Step Web Design Process" style={{ width: '100%', height: 'auto', display: 'block' }} />
+          </div>
+          <div style={{ borderRadius: '1rem', overflow: 'hidden', boxShadow: t.shadow }}>
+            <img src={aboutImage2} alt="5 Key Stages of Web Design" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+          </div>
+        </div>
+
+        {/* Stats cards */}
+        <div ref={statsRef} className="stats-grid" style={{ marginBottom: '4rem' }}>
+          {stats.map((stat) => (
+            <StatCard key={stat.label} stat={stat} triggered={triggered} t={t} />
+          ))}
+        </div>
+
+        {/* Bio + Skills */}
+        <div className="about-grid" style={{ display: 'grid', gap: '3rem', alignItems: 'start' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.6rem', fontWeight: 700, color: t.heading, margin: 0 }}>Full-Stack Developer & AI Engineer</h3>
+            <p style={{ color: t.body, lineHeight: 1.8, margin: 0 }}>
+              I'm <strong style={{ color: t.heading }}>Junaid Ameer Khan</strong>, a Computer Science student at Namal University Mianwali with a strong focus on full-stack web development and AI engineering. I build intelligent, scalable applications that solve real-world problems.
+            </p>
+            <p style={{ color: t.body, lineHeight: 1.8, margin: 0 }}>
+              I work with React, Node.js, Python, and Firebase — and I'm deeply interested in machine learning and AI-driven solutions. I enjoy breaking down complex problems into clean, maintainable code.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              {[
+                { label: 'Email',    value: 'junaidameerkhan555@gmail.com' },
+                { label: 'Phone',    value: '+92 311 2467786' },
+                { label: 'LinkedIn', value: 'linkedin.com/in/junaidameerkhan' },
+                { label: 'Location', value: 'Namal University Mianwali, Pakistan' },
+              ].map(({ label, value }) => (
+                <p key={label} style={{ margin: 0, color: t.body, fontSize: '0.95rem' }}>
+                  <span style={{ color: t.heading, fontWeight: 600, minWidth: '5rem', display: 'inline-block' }}>{label}:</span> {value}
+                </p>
+              ))}
+            </div>
+            <a href="https://www.linkedin.com/in/junaidameerkhan/" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', alignSelf: 'flex-start', color: '#fff', backgroundColor: 'hsl(217,80%,55%)', padding: '0.6rem 1.5rem', borderRadius: '3rem', textDecoration: 'none', fontWeight: 500, fontSize: '1rem', boxShadow: '0 4px 12px rgba(59,130,246,0.3)', transition: 'all 0.25s ease' }}>
+              Read More &nbsp;→
+            </a>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, color: t.heading, margin: '0 0 0.5rem' }}>Technical Skills</h3>
+            {skills.map(({ name, level }) => (
+              <div key={name}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
+                  <span style={{ color: t.heading, fontWeight: 500, fontSize: '0.95rem' }}>{name}</span>
+                  <span style={{ color: t.subheading, fontWeight: 600, fontSize: '0.9rem' }}>{level}%</span>
+                </div>
+                <div style={{ height: '6px', borderRadius: '99px', backgroundColor: t.skillBg, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: triggered ? `${level}%` : '0%', borderRadius: '99px', backgroundColor: t.skillFill, transition: 'width 1s ease' }} />
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      <style>{`
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+        .images-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        .about-grid { grid-template-columns: 1fr; }
+        @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
+        @media (min-width: 768px) {
+          .about-grid { grid-template-columns: 1fr 1fr; }
+          .images-grid { grid-template-columns: 1fr 1fr; }
+        }
+      `}</style>
     </section>
   )
 }
-
-export default About
