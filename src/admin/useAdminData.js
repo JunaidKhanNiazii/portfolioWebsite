@@ -32,15 +32,16 @@ export default function useAdminData() {
   // ── Projects CRUD ──
   const saveProject = async (form, editId) => {
     const payload = {
-      title:       form.title,
-      description: form.description,
-      githubLink:  form.githubLink,
-      websiteLink: form.websiteLink,
-      imageUrl:    form.imageUrl,
-      images:      form.images,
-      tags:        form.tags.split(',').map(s => s.trim()).filter(Boolean),
-      features:    form.features.split('\n').map(s => s.trim()).filter(Boolean),
-      updatedAt:   new Date().toISOString(),
+      title:               form.title,
+      description:         form.description,
+      detailedDescription: form.detailedDescription || '',
+      githubLink:          form.githubLink,
+      websiteLink:         form.websiteLink,
+      imageUrl:            form.imageUrl,
+      images:              form.images,
+      tags:                form.tags.split(',').map(s => s.trim()).filter(Boolean),
+      features:            form.features.split('\n').map(s => s.trim()).filter(Boolean),
+      updatedAt:           new Date().toISOString(),
     }
     if (editId) {
       await updateDoc(doc(db, 'projects', editId), payload)

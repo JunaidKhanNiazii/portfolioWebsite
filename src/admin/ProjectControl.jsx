@@ -40,11 +40,17 @@ export default function ProjectControl({ projects, t, saveProject, deleteProject
   }
 
   const handleGalleryFiles = (e) => {
+    const MAX = 4
     Array.from(e.target.files).forEach(file => {
       const reader = new FileReader()
-      reader.onloadend = () => setForm(f => ({ ...f, images: [...f.images, { url: reader.result, caption: '' }] }))
+      reader.onloadend = () => setForm(f => {
+        if (f.images.length >= MAX) return f          // hard cap at 4
+        return { ...f, images: [...f.images, { url: reader.result, caption: '' }] }
+      })
       reader.readAsDataURL(file)
     })
+    // reset input so same files can be re-selected after removal
+    e.target.value = ''
   }
 
   const updateCaption = (i, caption) => {

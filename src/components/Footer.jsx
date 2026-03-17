@@ -35,7 +35,14 @@ const scrollTo = (href) => {
   }
   if (href.startsWith('#')) {
     const id = href.slice(1)
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    // if we're on a sub-page (project detail etc.), go home first then scroll
+    const isSubPage = window.location.hash.startsWith('#project/')
+    if (isSubPage) {
+      window.location.hash = ''
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 80)
+    } else {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    }
   } else {
     window.open(href, '_blank', 'noopener noreferrer')
   }

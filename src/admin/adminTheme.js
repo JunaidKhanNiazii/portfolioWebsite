@@ -20,6 +20,6 @@ export function useT(dark) {
 }
 
 export const emptyForm = {
-  title: '', description: '', githubLink: '', websiteLink: '',
+  title: '', description: '', detailedDescription: '', githubLink: '', websiteLink: '',
   tags: '', features: '', imageUrl: '', images: [],
 }

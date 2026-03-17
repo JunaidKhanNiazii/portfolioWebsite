@@ -11,6 +11,7 @@ import AdminPage from './admin/AdminPage'
 import Footer from './components/Footer'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import TermsAndConditions from './components/TermsAndConditions'
+import ProjectDetailPage from './components/ProjectDetailPage'
 import './App.css'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [isAdminRoute, setIsAdminRoute] = useState(false)
   const [currentPage, setCurrentPage] = useState('home')
+  const [projectId, setProjectId]     = useState(null)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -33,9 +35,10 @@ function App() {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1)
       setIsAdminRoute(hash === 'admin')
-      if (hash === 'privacy') setCurrentPage('privacy')
-      else if (hash === 'terms') setCurrentPage('terms')
-      else setCurrentPage('home')
+      if (hash === 'privacy') { setCurrentPage('privacy'); setProjectId(null) }
+      else if (hash === 'terms') { setCurrentPage('terms'); setProjectId(null) }
+      else if (hash.startsWith('project/')) { setCurrentPage('project'); setProjectId(hash.replace('project/', '')) }
+      else { setCurrentPage('home'); setProjectId(null) }
     }
 
     handleHashChange()
@@ -69,6 +72,11 @@ function App() {
   // Privacy & Terms pages
   if (currentPage === 'privacy') return <PrivacyPolicy onBack={goHome} />
   if (currentPage === 'terms')   return <TermsAndConditions onBack={goHome} />
+
+  // Project detail page
+  if (currentPage === 'project' && projectId) {
+    return <ProjectDetailPage projectId={projectId} onBack={() => { window.location.hash = ''; setTimeout(() => { document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }) }, 100) }} />
+  }
 
   // Admin route - requires authentication
   if (isAdminRoute) {
