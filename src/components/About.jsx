@@ -1,7 +1,7 @@
 import { useTheme } from '../context/ThemeContext'
 import { useEffect, useRef, useState } from 'react'
 
-const aboutImage = 'src/assets/agile.webp'
+import aboutImage from '../assets/agile.webp'
 const aboutImage2 = 'https://www.amazing7.com/images/infographic%207%20step-01.jpg'
 
 const stats = [
