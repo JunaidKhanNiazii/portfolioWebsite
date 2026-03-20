@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ACCENT } from './adminTheme'
+import { uploadToGithub } from './uploadToGithub'
 
 function FormField({ label, hint, t, children }) {
   return (
@@ -13,8 +14,24 @@ function FormField({ label, hint, t, children }) {
   )
 }
 
+function UploadBtn({ label, uploading, onChange, t }) {
+  return (
+    <label style={{
+      display: 'inline-flex', alignItems: 'center', gap: '0.4rem',
+      padding: '0.55rem 1rem', borderRadius: '0.5rem', cursor: uploading ? 'not-allowed' : 'pointer',
+      backgroundColor: uploading ? 'hsl(217,80%,40%)' : ACCENT,
+      color: '#fff', fontWeight: 600, fontSize: '0.85rem', opacity: uploading ? 0.7 : 1,
+    }}>
+      {uploading ? '⏳ Uploading…' : `📁 ${label}`}
+      <input type="file" accept="image/*" style={{ display: 'none' }} disabled={uploading} onChange={onChange} />
+    </label>
+  )
+}
+
 export default function ProjectForm({ form, setForm, t, loading, editId, onSubmit, updateCaption, removeGalleryImg }) {
-  const [galleryInput, setGalleryInput] = useState('')
+  const [coverUploading,   setCoverUploading]   = useState(false)
+  const [galleryUploading, setGalleryUploading] = useState(false)
+  const [uploadError,      setUploadError]      = useState('')
 
   const inp = {
     width: '100%', boxSizing: 'border-box', padding: '0.6rem 0.85rem',
@@ -23,12 +40,37 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
     fontFamily: 'inherit', outline: 'none',
   }
 
-  const addGalleryUrl = () => {
-    const url = galleryInput.trim()
-    if (!url) return
+  const handleCoverFile = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setUploadError('')
+    setCoverUploading(true)
+    try {
+      const url = await uploadToGithub(file)
+      setForm(f => ({ ...f, imageUrl: url }))
+    } catch (err) {
+      setUploadError(err.message)
+    } finally {
+      setCoverUploading(false)
+      e.target.value = ''
+    }
+  }
+
+  const handleGalleryFile = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
     if (form.images.length >= 4) return
-    setForm(f => ({ ...f, images: [...f.images, { url, caption: '' }] }))
-    setGalleryInput('')
+    setUploadError('')
+    setGalleryUploading(true)
+    try {
+      const url = await uploadToGithub(file)
+      setForm(f => ({ ...f, images: [...f.images, { url, caption: '' }] }))
+    } catch (err) {
+      setUploadError(err.message)
+    } finally {
+      setGalleryUploading(false)
+      e.target.value = ''
+    }
   }
 
   return (
@@ -37,8 +79,14 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
         {editId ? 'Edit Project' : 'Add New Project'}
       </h2>
       <p style={{ fontSize: '0.8rem', color: t.muted, marginBottom: '1.5rem' }}>
-        Upload images to your GitHub repo under <code style={{ backgroundColor: t.tag, color: t.tagText, padding: '0.1rem 0.4rem', borderRadius: '0.25rem' }}>public/images/projects/</code> then paste the raw URL below.
+        Pick images from your device — they upload to GitHub automatically and the URL is saved in Firestore.
       </p>
+
+      {uploadError && (
+        <div style={{ backgroundColor: 'hsl(0,70%,20%)', border: '1px solid hsl(0,70%,40%)', borderRadius: '0.5rem', padding: '0.75rem 1rem', marginBottom: '1rem', color: '#fca5a5', fontSize: '0.85rem' }}>
+          ⚠️ {uploadError}
+        </div>
+      )}
 
       <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
 
@@ -56,7 +104,7 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
         </FormField>
 
         <FormField label="Detailed Description" t={t}>
-          <textarea style={{ ...inp, minHeight: '7rem', resize: 'vertical' }} value={form.detailedDescription || ''} onChange={e => setForm(f => ({ ...f, detailedDescription: e.target.value }))} placeholder="Full project description…" />
+          <textarea style={{ ...inp, minHeight: '7rem', resize: 'vertical' }} value={form.detailedDescription || ''} onChange={e => setForm(f => ({ ...f, detailedDescription: e.target.value }))} placeholder="Full project description shown on the detail page…" />
         </FormField>
 
         <FormField label="Key Features (one per line)" t={t}>
@@ -72,15 +120,13 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
           </FormField>
         </div>
 
-        {/* Cover image URL */}
-        <FormField label="Cover Image URL" hint="Paste a raw GitHub URL: https://raw.githubusercontent.com/…/image.jpg" t={t}>
-          <input style={inp} type="url" value={form.imageUrl}
-            onChange={e => setForm(f => ({ ...f, imageUrl: e.target.value }))}
-            placeholder="https://raw.githubusercontent.com/JunaidKhanNiazii/portfolioWebsite/main/public/images/projects/cover.jpg" />
+        {/* Cover Image */}
+        <FormField label="Cover Image" hint="Pick a file — it uploads to GitHub instantly" t={t}>
+          <UploadBtn label="Choose Cover Image" uploading={coverUploading} onChange={handleCoverFile} t={t} />
           {form.imageUrl && (
-            <div style={{ position: 'relative', display: 'inline-block', marginTop: '0.5rem' }}>
+            <div style={{ position: 'relative', display: 'inline-block', marginTop: '0.75rem' }}>
               <img src={form.imageUrl} alt="cover preview"
-                onError={e => { e.target.style.display = 'none' }}
+                onError={e => { e.target.style.opacity = '0.3' }}
                 style={{ height: '7rem', borderRadius: '0.5rem', objectFit: 'cover', display: 'block' }} />
               <button type="button" onClick={() => setForm(f => ({ ...f, imageUrl: '' }))}
                 style={{ position: 'absolute', top: '0.25rem', right: '0.25rem', background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff', borderRadius: '50%', width: '1.4rem', height: '1.4rem', cursor: 'pointer', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -90,19 +136,10 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
           )}
         </FormField>
 
-        {/* Gallery URLs */}
-        <FormField label={`Gallery Images (${form.images.length}/4)`} hint="Add up to 4 image URLs from GitHub" t={t}>
+        {/* Gallery Images */}
+        <FormField label={`Gallery Images (${form.images.length}/4)`} hint="Pick files one at a time — each uploads to GitHub automatically" t={t}>
           {form.images.length < 4 && (
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input style={{ ...inp, flex: 1 }} type="url" value={galleryInput}
-                onChange={e => setGalleryInput(e.target.value)}
-                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addGalleryUrl() } }}
-                placeholder="https://raw.githubusercontent.com/…/image.jpg" />
-              <button type="button" onClick={addGalleryUrl}
-                style={{ padding: '0.6rem 1rem', borderRadius: '0.5rem', border: 'none', backgroundColor: ACCENT, color: '#fff', fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', whiteSpace: 'nowrap' }}>
-                + Add
-              </button>
-            </div>
+            <UploadBtn label="Add Gallery Image" uploading={galleryUploading} onChange={handleGalleryFile} t={t} />
           )}
           {form.images.length >= 4 && (
             <p style={{ fontSize: '0.82rem', color: t.danger || '#ef4444', margin: '0 0 0.5rem' }}>
@@ -131,12 +168,13 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
           )}
         </FormField>
 
-        <button type="submit" disabled={loading} style={{
+        <button type="submit" disabled={loading || coverUploading || galleryUploading} style={{
           padding: '0.7rem 1.5rem', borderRadius: '0.6rem', border: 'none',
           backgroundColor: loading ? 'hsl(217,80%,40%)' : ACCENT,
           color: '#fff', fontWeight: 700, fontSize: '0.95rem',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          fontFamily: 'inherit', alignSelf: 'flex-start', opacity: loading ? 0.7 : 1,
+          cursor: (loading || coverUploading || galleryUploading) ? 'not-allowed' : 'pointer',
+          fontFamily: 'inherit', alignSelf: 'flex-start',
+          opacity: (loading || coverUploading || galleryUploading) ? 0.7 : 1,
         }}>
           {loading ? 'Saving…' : editId ? 'Update Project' : 'Add Project'}
         </button>
