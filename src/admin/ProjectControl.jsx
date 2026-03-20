@@ -31,28 +31,6 @@ export default function ProjectControl({ projects, t, saveProject, deleteProject
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleImageFile = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    const reader = new FileReader()
-    reader.onloadend = () => setForm(f => ({ ...f, imageUrl: reader.result }))
-    reader.readAsDataURL(file)
-  }
-
-  const handleGalleryFiles = (e) => {
-    const MAX = 4
-    Array.from(e.target.files).forEach(file => {
-      const reader = new FileReader()
-      reader.onloadend = () => setForm(f => {
-        if (f.images.length >= MAX) return f          // hard cap at 4
-        return { ...f, images: [...f.images, { url: reader.result, caption: '' }] }
-      })
-      reader.readAsDataURL(file)
-    })
-    // reset input so same files can be re-selected after removal
-    e.target.value = ''
-  }
-
   const updateCaption = (i, caption) => {
     setForm(f => {
       const imgs = [...f.images]
@@ -99,8 +77,6 @@ export default function ProjectControl({ projects, t, saveProject, deleteProject
           form={form} setForm={setForm} t={t}
           loading={loading} editId={editId}
           onSubmit={handleSubmit}
-          onImageFile={handleImageFile}
-          onGalleryFiles={handleGalleryFiles}
           updateCaption={updateCaption}
           removeGalleryImg={removeGalleryImg}
         />
