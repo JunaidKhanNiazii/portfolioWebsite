@@ -53,7 +53,7 @@ export default function Home() {
         pointerEvents: 'none',
       }} />
 
-      {/* Social icons — right edge */}
+      {/* Social icons — right edge, desktop always visible, mobile visible too */}
       <div className="banner-socials" style={{
         position: 'absolute',
         right: '1.5rem',
@@ -98,8 +98,8 @@ export default function Home() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
 
             {/* Pill badge */}
+            <div className="badge-wrap" style={{ display: 'flex' }}>
             <span style={{
-              alignSelf: 'flex-start',
               padding: '0.3rem 1rem',
               borderRadius: '3rem',
               border: '1px solid hsl(217,80%,40%)',
@@ -114,6 +114,7 @@ export default function Home() {
             }}>
               👋 Available for work
             </span>
+            </div>
 
             <h1 style={{
               fontFamily: 'inherit',
@@ -144,7 +145,7 @@ export default function Home() {
               Full-Stack Developer & AI Engineer passionate about crafting smart, scalable applications — from clean front-end interfaces to intelligent back-end systems.
             </p>
 
-            <div style={{
+            <div className="btn-row" style={{
               display: 'flex', gap: '1rem', flexWrap: 'wrap',
               opacity: visible ? 1 : 0,
               transform: visible ? 'translateY(0)' : 'translateY(16px)',
@@ -191,6 +192,7 @@ export default function Home() {
             transform: visible ? 'scale(1)' : 'scale(0.92)',
             transition: 'opacity 0.7s ease, transform 0.7s ease',
             transitionDelay: '0.3s',
+            order: 2,
           }}>
             {/* Rotating ring */}
             <div style={{
@@ -227,28 +229,72 @@ export default function Home() {
       </div>
 
       <style>{`
-        .banner-grid { grid-template-columns: 1fr; }
-        .mobile-socials { display: flex; }
-
-        @media (min-width: 768px) {
-          .banner-grid { grid-template-columns: 1fr 1fr; margin-top: 2rem; }
+        /* ── MOBILE (default) ── */
+        .banner-grid {
+          grid-template-columns: 1fr;
+          text-align: center;
         }
+
+        /* badge centered */
+        .badge-wrap { justify-content: center; }
+
+        /* heading smaller & centered */
+        .banner-grid h1 {
+          font-size: clamp(1.6rem, 7vw, 2.4rem) !important;
+          text-align: center;
+        }
+
+        /* description centered */
+        .banner-grid p {
+          text-align: center;
+          margin-left: auto !important;
+          margin-right: auto !important;
+        }
+
+        /* buttons row centered */
+        .btn-row { justify-content: center !important; }
+
+        /* hide desktop side socials, show mobile inline socials */
+        .banner-socials { visibility: visible !important; }
+        .mobile-socials { display: none !important; }
+
+        /* image centered & smaller */
+        .banner-image-wrap {
+          justify-content: center;
+        }
+        .banner-image-wrap img              { width: 200px !important; height: 200px !important; }
+        .banner-image-wrap > div:nth-child(1){ width: 230px !important; height: 230px !important; }
+        .banner-image-wrap > div:nth-child(2){ width: 218px !important; height: 218px !important; }
+
+        /* ── DESKTOP 768px+ ── */
+        @media (min-width: 768px) {
+          .banner-grid {
+            grid-template-columns: 1fr 1fr;
+            text-align: left;
+            margin-top: 2rem;
+          }
+          .badge-wrap { justify-content: flex-start; }
+          .banner-grid h1 { font-size: clamp(2rem, 4vw, 4rem) !important; text-align: left; }
+          .banner-grid p  { text-align: left; margin-left: 0 !important; margin-right: 0 !important; }
+          .btn-row { justify-content: flex-start !important; }
+          .mobile-socials { justify-content: flex-start; }
+          .banner-image-wrap img              { width: 280px !important; height: 280px !important; }
+          .banner-image-wrap > div:nth-child(1){ width: 310px !important; height: 310px !important; }
+          .banner-image-wrap > div:nth-child(2){ width: 298px !important; height: 298px !important; }
+        }
+
+        /* ── DESKTOP 1024px+ ── */
         @media (min-width: 1024px) {
           .banner-grid { grid-template-columns: 1fr max-content; column-gap: 4rem; }
           .banner-socials { visibility: visible !important; }
-          .banner-image-wrap img { width: 420px !important; height: 420px !important; }
-          .banner-image-wrap > div:nth-child(1) { width: 440px !important; height: 440px !important; }
-          .banner-image-wrap > div:nth-child(2) { width: 420px !important; height: 420px !important; }
+          .banner-grid h1 { font-size: clamp(2.65rem, 6vw, 4rem) !important; }
+          .banner-image-wrap img              { width: 380px !important; height: 380px !important; }
+          .banner-image-wrap > div:nth-child(1){ width: 440px !important; height: 440px !important; }
+          .banner-image-wrap > div:nth-child(2){ width: 420px !important; height: 420px !important; }
           .mobile-socials { display: none !important; }
-        }
-        @media (max-width: 767px) {
-          .banner-image-wrap img { width: 260px !important; height: 260px !important; }
-          .banner-image-wrap > div:nth-child(2) { width: 290px !important; height: 290px !important; }
-          .banner-image-wrap > div:nth-child(1) { width: 310px !important; height: 310px !important; }
         }
 
         .social-icon-link:hover { color: hsl(217,80%,65%) !important; transform: scale(1.2) !important; }
-
         @keyframes spin-slow { to { transform: rotate(360deg); } }
       `}</style>
     </section>

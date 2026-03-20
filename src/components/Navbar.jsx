@@ -40,17 +40,6 @@ export default function Navbar() {
           display: 'flex', alignItems: 'center', height: '4rem',
           maxWidth: '75rem', margin: '0 auto', padding: '0 1.5rem',
         }}>
-          {/* Burger — mobile only */}
-          <button onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" style={{
-            display: 'none', order: -1, position: 'relative', zIndex: 10,
-            width: '1.5rem', height: '1rem', background: 'none', border: 'none',
-            padding: 0, cursor: 'pointer', flexShrink: 0,
-          }} className="burger-btn">
-            <span style={{ ...line, top: 0, transform: menuOpen ? 'rotate(135deg)' : 'none', marginTop: menuOpen ? '0.5rem' : 0 }} />
-            <span style={{ ...line, top: '0.5rem', width: menuOpen ? '100%' : '70%', opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ ...line, top: menuOpen ? '0.5rem' : '1rem', transform: menuOpen ? 'rotate(-135deg)' : 'none' }} />
-          </button>
-
           {/* Brand */}
           <a href="#" onClick={e => { e.preventDefault(); scrollTo('home') }} style={{
             fontSize: '1.5rem', fontWeight: 700, textTransform: 'uppercase',
@@ -58,6 +47,17 @@ export default function Navbar() {
           }}>
             Portfolio
           </a>
+
+          {/* Burger — mobile only, right side */}
+          <button onClick={() => setMenuOpen(p => !p)} aria-label="Toggle menu" style={{
+            display: 'none', marginLeft: 'auto', position: 'relative', zIndex: 10,
+            width: '1.5rem', height: '1rem', background: 'none', border: 'none',
+            padding: 0, cursor: 'pointer', flexShrink: 0,
+          }} className="burger-btn">
+            <span style={{ ...line, top: 0, transform: menuOpen ? 'rotate(135deg)' : 'none', marginTop: menuOpen ? '0.5rem' : 0 }} />
+            <span style={{ ...line, top: '0.5rem', width: menuOpen ? '100%' : '70%', opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ ...line, top: menuOpen ? '0.5rem' : '1rem', transform: menuOpen ? 'rotate(-135deg)' : 'none' }} />
+          </button>
 
           {/* Desktop nav */}
           <div className="desktop-nav" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '2rem' }}>
