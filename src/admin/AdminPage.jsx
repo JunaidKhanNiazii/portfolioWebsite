@@ -5,6 +5,7 @@ import useAdminData from './useAdminData'
 import AdminNavbar from './AdminNavbar'
 import ProjectControl from './ProjectControl'
 import MessageControl from './MessageControl'
+import CertControl from './CertControl'
 
 export default function AdminPage() {
   const { theme } = useTheme()
@@ -14,8 +15,9 @@ export default function AdminPage() {
   const [tab, setTab] = useState('projects')
 
   const {
-    projects, contacts, unreadCount, toast,
+    projects, contacts, certs, unreadCount, toast,
     saveProject, deleteProject,
+    saveCert, deleteCert,
     markRead, deleteContact,
     logout,
   } = useAdminData()
@@ -39,6 +41,7 @@ export default function AdminPage() {
       <AdminNavbar
         tab={tab} setTab={setTab}
         projectCount={projects.length}
+        certCount={certs.length}
         unreadCount={unreadCount}
         onLogout={logout}
         t={t}
@@ -50,6 +53,13 @@ export default function AdminPage() {
             projects={projects} t={t}
             saveProject={saveProject}
             deleteProject={deleteProject}
+          />
+        )}
+        {tab === 'certs' && (
+          <CertControl
+            certs={certs} t={t}
+            saveCert={saveCert}
+            deleteCert={deleteCert}
           />
         )}
         {tab === 'contacts' && (

@@ -6,6 +6,7 @@ import { db, auth } from '../firebase'
 export default function useAdminData() {
   const [projects, setProjects] = useState([])
   const [contacts, setContacts] = useState([])
+  const [certs,    setCerts]    = useState([])
   const [toast, setToast]       = useState(null)
 
   const showToast = (msg, type = 'success') => {
@@ -27,7 +28,16 @@ export default function useAdminData() {
     )
   }, [])
 
-  useEffect(() => { fetchProjects(); fetchContacts() }, [fetchProjects, fetchContacts])
+  const fetchCerts = useCallback(async () => {
+    const snap = await getDocs(collection(db, 'certifications'))
+    setCerts(
+      snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+    )
+  }, [])
+
+  useEffect(() => { fetchProjects(); fetchContacts(); fetchCerts() }, [fetchProjects, fetchContacts, fetchCerts])
 
   // ── Projects CRUD ──
   const saveProject = async (form, editId) => {
@@ -61,6 +71,35 @@ export default function useAdminData() {
     return true
   }
 
+  // ── Certifications CRUD ──
+  const saveCert = async (form, editId) => {
+    const payload = {
+      title:         form.title,
+      issuer:        form.issuer,
+      date:          form.date,
+      type:          form.type,
+      description:   form.description,
+      credentialUrl: form.credentialUrl,
+      imageUrl:      form.imageUrl,
+      updatedAt:     new Date().toISOString(),
+    }
+    if (editId) {
+      await updateDoc(doc(db, 'certifications', editId), payload)
+      showToast('Certification updated!')
+    } else {
+      await addDoc(collection(db, 'certifications'), { ...payload, createdAt: new Date().toISOString() })
+      showToast('Certification added!')
+    }
+    fetchCerts()
+  }
+
+  const deleteCert = async (id) => {
+    if (!window.confirm('Delete this certification?')) return
+    await deleteDoc(doc(db, 'certifications', id))
+    fetchCerts()
+    showToast('Deleted.', 'info')
+  }
+
   // ── Contacts CRUD ──
   const markRead = async (id) => {
     await updateDoc(doc(db, 'contacts', id), { status: 'read' })
@@ -80,8 +119,9 @@ export default function useAdminData() {
   const unreadCount = contacts.filter(c => c.status === 'unread').length
 
   return {
-    projects, contacts, unreadCount, toast,
+    projects, contacts, certs, unreadCount, toast,
     saveProject, deleteProject,
+    saveCert, deleteCert,
     markRead, deleteContact,
     logout, showToast,
   }

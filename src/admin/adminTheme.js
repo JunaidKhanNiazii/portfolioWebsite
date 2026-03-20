@@ -23,3 +23,8 @@ export const emptyForm = {
   title: '', description: '', detailedDescription: '', githubLink: '', websiteLink: '',
   tags: '', features: '', imageUrl: '', images: [],
 }
+
+export const emptyCertForm = {
+  title: '', issuer: '', date: '', type: 'certification',
+  description: '', credentialUrl: '', imageUrl: '',
+}

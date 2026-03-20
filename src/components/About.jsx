@@ -1,6 +1,7 @@
 import { useTheme } from '../context/ThemeContext'
 import { useEffect, useRef, useState } from 'react'
-
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '../firebase'
 import aboutImage from '../assets/agile.webp'
 const aboutImage2 = 'https://www.amazing7.com/images/infographic%207%20step-01.jpg'
 
@@ -78,11 +79,71 @@ function StatCard({ stat, triggered, t }) {
   )
 }
 
+const TYPE_COLORS = {
+  certification: 'hsl(217,80%,55%)',
+  achievement:   'hsl(142,70%,45%)',
+  award:         'hsl(38,90%,55%)',
+  course:        'hsl(280,70%,60%)',
+}
+
+function CertCard({ cert, t }) {
+  const [hovered, setHovered] = useState(false)
+  const color = TYPE_COLORS[cert.type] || TYPE_COLORS.certification
+  return (
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        backgroundColor: t.cardBg, border: `1px solid ${t.border}`,
+        borderRadius: '0.75rem', overflow: 'hidden',
+        boxShadow: hovered ? t.statShadowHover : t.statShadow,
+        transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
+        transition: 'all 0.3s ease', display: 'flex', flexDirection: 'column',
+      }}
+    >
+      {cert.imageUrl && (
+        <img src={cert.imageUrl} alt={cert.title}
+          style={{ width: '100%', height: '10rem', objectFit: 'cover', display: 'block' }} />
+      )}
+      <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem' }}>
+          <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '0.15rem 0.6rem', borderRadius: '99px', backgroundColor: color + '22', color, textTransform: 'capitalize' }}>
+            {cert.type || 'certification'}
+          </span>
+          {cert.date && <span style={{ fontSize: '0.75rem', color: t.body }}>{cert.date}</span>}
+        </div>
+        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: t.heading, margin: 0, lineHeight: 1.3 }}>{cert.title}</h3>
+        <p style={{ fontSize: '0.85rem', color: t.subheading, margin: 0, fontWeight: 600 }}>{cert.issuer}</p>
+        {cert.description && (
+          <p style={{ fontSize: '0.82rem', color: t.body, margin: 0, lineHeight: 1.5 }}>{cert.description}</p>
+        )}
+        {cert.credentialUrl && (
+          <a href={cert.credentialUrl} target="_blank" rel="noopener noreferrer"
+            style={{ marginTop: 'auto', paddingTop: '0.5rem', fontSize: '0.82rem', color: t.subheading, fontWeight: 600, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+            View Credential →
+          </a>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function About() {
   const { theme } = useTheme()
   const dark = theme === 'dark'
   const statsRef = useRef(null)
   const [triggered, setTriggered] = useState(false)
+  const [certs, setCerts] = useState([])
+
+  useEffect(() => {
+    getDocs(collection(db, 'certifications')).then(snap => {
+      setCerts(
+        snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+      )
+    })
+  }, [])
 
   const t = {
     bg:              dark ? 'hsl(240,10%,5%)'  : 'hsl(220,20%,96%)',
@@ -184,10 +245,26 @@ export default function About() {
         </div>
       </div>
 
+        {/* Certifications & Achievements */}
+        {certs.length > 0 && (
+          <div style={{ maxWidth: '75rem', margin: '4rem auto 0', padding: '0 1.5rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+              <p style={{ color: t.subheading, fontWeight: 600, fontSize: '0.9rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Credentials</p>
+              <h2 style={{ fontSize: 'clamp(1.6rem, 3vw, 2.2rem)', fontWeight: 700, color: t.heading, margin: 0 }}>Certifications & Achievements</h2>
+            </div>
+            <div className="certs-grid">
+              {certs.map(cert => (
+                <CertCard key={cert.id} cert={cert} t={t} />
+              ))}
+            </div>
+          </div>
+        )}
+
       <style>{`
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
         .images-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         .about-grid { grid-template-columns: 1fr; }
+        .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); gap: 1.25rem; }
         @media (min-width: 640px) { .stats-grid { grid-template-columns: repeat(4, 1fr); } }
         @media (min-width: 768px) {
           .about-grid { grid-template-columns: 1fr 1fr; }

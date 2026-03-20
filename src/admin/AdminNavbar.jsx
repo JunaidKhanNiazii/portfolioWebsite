@@ -1,7 +1,7 @@
 import { ACCENT } from './adminTheme'
 import { useTheme } from '../context/ThemeContext'
 
-export default function AdminNavbar({ tab, setTab, projectCount, unreadCount, onLogout, t }) {
+export default function AdminNavbar({ tab, setTab, projectCount, unreadCount, certCount, onLogout, t }) {
   const { theme, toggleTheme } = useTheme()
 
   return (
@@ -15,6 +15,7 @@ export default function AdminNavbar({ tab, setTab, projectCount, unreadCount, on
           <div style={{ display: 'flex', gap: '0.25rem' }}>
             {[
               ['projects', `Projects (${projectCount})`],
+              ['certs',    `Certs (${certCount})`],
               ['contacts', 'Messages'],
             ].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key)} style={{
