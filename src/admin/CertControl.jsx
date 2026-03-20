@@ -25,6 +25,7 @@ export default function CertControl({ certs, t, saveCert, deleteCert }) {
       description:   c.description || '',
       credentialUrl: c.credentialUrl || '',
       imageUrl:      c.imageUrl || '',
+      order:         c.order ?? 0,
     })
     setShowForm(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })

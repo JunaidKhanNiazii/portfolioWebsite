@@ -30,6 +30,11 @@ export default function CertRow({ cert, t, onEdit, onDelete }) {
           <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '0.15rem 0.5rem', borderRadius: '99px', backgroundColor: color + '22', color }}>
             {cert.type || 'certification'}
           </span>
+          {cert.order !== undefined && (
+            <span style={{ fontSize: '0.7rem', fontWeight: 700, padding: '0.15rem 0.45rem', borderRadius: '99px', backgroundColor: t.tag, color: t.tagText }}>
+              #{cert.order}
+            </span>
+          )}
         </div>
         <p style={{ margin: '0.2rem 0 0', color: t.muted, fontSize: '0.82rem' }}>
           {cert.issuer}{cert.date ? ` · ${cert.date}` : ''}

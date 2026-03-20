@@ -21,10 +21,10 @@ export function useT(dark) {
 
 export const emptyForm = {
   title: '', description: '', detailedDescription: '', githubLink: '', websiteLink: '',
-  tags: '', features: '', imageUrl: '', images: [],
+  tags: '', features: '', imageUrl: '', images: [], order: 0,
 }
 
 export const emptyCertForm = {
   title: '', issuer: '', date: '', type: 'certification',
-  description: '', credentialUrl: '', imageUrl: '',
+  description: '', credentialUrl: '', imageUrl: '', order: 0,
 }

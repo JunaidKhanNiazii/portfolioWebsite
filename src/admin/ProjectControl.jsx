@@ -26,6 +26,7 @@ export default function ProjectControl({ projects, t, saveProject, deleteProject
       features:    (p.features || []).join('\n'),
       imageUrl:    p.imageUrl || '',
       images:      p.images || [],
+      order:       p.order ?? 0,
     })
     setShowForm(true)
     window.scrollTo({ top: 0, behavior: 'smooth' })

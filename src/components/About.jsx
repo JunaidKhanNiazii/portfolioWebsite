@@ -140,7 +140,7 @@ export default function About() {
       setCerts(
         snap.docs
           .map(d => ({ id: d.id, ...d.data() }))
-          .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+          .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
       )
     })
   }, [])

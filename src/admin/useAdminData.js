@@ -16,7 +16,11 @@ export default function useAdminData() {
 
   const fetchProjects = useCallback(async () => {
     const snap = await getDocs(collection(db, 'projects'))
-    setProjects(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+    setProjects(
+      snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
+    )
   }, [])
 
   const fetchContacts = useCallback(async () => {
@@ -33,7 +37,7 @@ export default function useAdminData() {
     setCerts(
       snap.docs
         .map(d => ({ id: d.id, ...d.data() }))
-        .sort((a, b) => (b.date || '').localeCompare(a.date || ''))
+        .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
     )
   }, [])
 
@@ -51,6 +55,7 @@ export default function useAdminData() {
       images:              form.images,
       tags:                form.tags.split(',').map(s => s.trim()).filter(Boolean),
       features:            form.features.split('\n').map(s => s.trim()).filter(Boolean),
+      order:               Number(form.order) || 0,
       updatedAt:           new Date().toISOString(),
     }
     if (editId) {
@@ -81,6 +86,7 @@ export default function useAdminData() {
       description:   form.description,
       credentialUrl: form.credentialUrl,
       imageUrl:      form.imageUrl,
+      order:         Number(form.order) || 0,
       updatedAt:     new Date().toISOString(),
     }
     if (editId) {

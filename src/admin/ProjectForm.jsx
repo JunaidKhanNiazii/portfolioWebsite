@@ -97,6 +97,9 @@ export default function ProjectForm({ form, setForm, t, loading, editId, onSubmi
           <FormField label="Tech Tags (comma separated)" t={t}>
             <input style={inp} value={form.tags} onChange={e => setForm(f => ({ ...f, tags: e.target.value }))} placeholder="React, Firebase, Node.js" />
           </FormField>
+          <FormField label="Display Order" hint="Lower number = shown first (0, 1, 2…)" t={t}>
+            <input style={{ ...inp, width: '6rem' }} type="number" min="0" value={form.order ?? 0} onChange={e => setForm(f => ({ ...f, order: Number(e.target.value) }))} />
+          </FormField>
         </div>
 
         <FormField label="Short Description *" t={t}>

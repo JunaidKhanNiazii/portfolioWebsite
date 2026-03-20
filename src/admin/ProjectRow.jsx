@@ -17,6 +17,11 @@ export default function ProjectRow({ project, t, onEdit, onDelete }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, color: t.heading, margin: '0 0 0.2rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {project.title}
+            {project.order !== undefined && (
+              <span style={{ marginLeft: '0.5rem', fontSize: '0.7rem', fontWeight: 700, padding: '0.1rem 0.45rem', borderRadius: '99px', backgroundColor: t.tag, color: t.tagText, verticalAlign: 'middle' }}>
+                #{project.order}
+              </span>
+            )}
           </h3>
           <p style={{ fontSize: '0.82rem', color: t.body, margin: '0 0 0.4rem', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
             {project.description}

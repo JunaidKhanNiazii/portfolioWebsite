@@ -42,7 +42,11 @@ export default function Projects() {
 
   useEffect(() => {
     getDocs(collection(db, 'projects'))
-      .then(snap => setProjects(snap.docs.map(d => ({ id: d.id, ...d.data() }))))
+      .then(snap => setProjects(
+        snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
+      ))
       .catch(console.error)
       .finally(() => setLoading(false))
   }, [])
