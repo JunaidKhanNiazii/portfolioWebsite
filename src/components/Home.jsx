@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import profileImage from '../resume/blackbackground.jpeg'
-import resumePDF from '../resume/onepagresume.pdf'
+import resumePDF from '../resume/junaidResume.pdf'
 import { FaGithub, FaLinkedinIn, FaYoutube } from 'react-icons/fa'
 import { SiFiverr } from 'react-icons/si'
 
@@ -22,7 +22,7 @@ export default function Home() {
   const handleDownload = () => {
     const a = document.createElement('a')
     a.href = resumePDF
-    a.download = 'Junaid_Resume.pdf'
+    a.download = 'Junaid_Ameer_Khan_Resume.pdf'
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
