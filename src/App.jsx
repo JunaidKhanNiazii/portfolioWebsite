@@ -12,6 +12,7 @@ import Footer from './components/Footer'
 import PrivacyPolicy from './components/PrivacyPolicy'
 import TermsAndConditions from './components/TermsAndConditions'
 import ProjectDetailPage from './components/ProjectDetailPage'
+import WhatsAppButton from './components/WhatsAppButton'
 import './App.css'
 
 function App() {
@@ -95,6 +96,7 @@ function App() {
       <Projects />
       <Contact />
       <Footer />
+      <WhatsAppButton />
     </div>
   )
 }
