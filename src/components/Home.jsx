@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import profileImage from '../resume/blackbackground.jpeg'
+import profileImage from '/image.png'
 import resumePDF from '../resume/junaidResume.pdf'
 import { FaGithub, FaLinkedinIn, FaYoutube } from 'react-icons/fa'
 import { SiFiverr } from 'react-icons/si'
