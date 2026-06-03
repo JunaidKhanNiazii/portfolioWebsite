@@ -109,14 +109,14 @@ export default function Contact() {
       {/* Google Map — Namal University Mianwali */}
       <div style={{ height: '320px', overflow: 'hidden', position: 'relative' }}>
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3358.160798422008!2d71.78895521474157!3d32.68176938100086!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391f6b7b4b4b4b4b%3A0x1234567890abcdef!2sNamal%20University%2C%20Mianwali%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d435520.3109817532!2d74.00471605!3d31.483103!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23abe6ccc7e2462!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
           width="100%"
           height="480"
           style={{ border: 0, marginTop: '-80px' }}
           allowFullScreen=""
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
-          title="Namal University Mianwali"
+          title="Lahore, Pakistan"
         />
       </div>
 
@@ -196,7 +196,7 @@ export default function Contact() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
                 </svg>,
                 'Address',
-                ['Namal University, Mianwali,', 'Punjab, Pakistan']
+                ['Lahore, Punjab,', 'Pakistan']
               )}
 
               {infoItem(

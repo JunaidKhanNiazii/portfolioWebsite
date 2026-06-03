@@ -205,7 +205,7 @@ export default function About() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <h3 style={{ fontSize: '1.6rem', fontWeight: 700, color: t.heading, margin: 0 }}>Full-Stack Developer & AI Engineer</h3>
             <p style={{ color: t.body, lineHeight: 1.8, margin: 0 }}>
-              I'm <strong style={{ color: t.heading }}>Junaid Ameer Khan</strong>, a Computer Science student at Namal University Mianwali with a strong focus on full-stack web development and AI engineering. I build intelligent, scalable applications that solve real-world problems.
+              I'm <strong style={{ color: t.heading }}>Junaid Ameer Khan</strong>, a Full-Stack Developer & AI Engineer based in Lahore, Pakistan with a strong focus on web development and AI engineering. I build intelligent, scalable applications that solve real-world problems.
             </p>
             <p style={{ color: t.body, lineHeight: 1.8, margin: 0 }}>
               I work with React, Node.js, Python, and Firebase — and I'm deeply interested in machine learning and AI-driven solutions. I enjoy breaking down complex problems into clean, maintainable code.
@@ -215,7 +215,7 @@ export default function About() {
                 { label: 'Email',    value: 'junaidameerkhan555@gmail.com' },
                 { label: 'Phone',    value: '+92 311 2467786' },
                 { label: 'LinkedIn', value: 'linkedin.com/in/junaidameerkhan' },
-                { label: 'Location', value: 'Namal University Mianwali, Pakistan' },
+                { label: 'Location', value: 'Lahore, Punjab, Pakistan' },
               ].map(({ label, value }) => (
                 <p key={label} style={{ margin: 0, color: t.body, fontSize: '0.95rem' }}>
                   <span style={{ color: t.heading, fontWeight: 600, minWidth: '5rem', display: 'inline-block' }}>{label}:</span> {value}

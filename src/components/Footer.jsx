@@ -72,7 +72,7 @@ export default function Footer() {
               </span>
             </a>
             <p style={{ marginTop: '0.75rem', fontSize: '0.875rem', color: 'hsl(220,12%,55%)', maxWidth: '18rem', lineHeight: 1.6 }}>
-              Full-Stack Developer & AI Engineer based in Pakistan. Building intelligent, scalable web solutions.
+              Full-Stack Developer & AI Engineer based in Lahore, Pakistan. Building intelligent, scalable web solutions.
             </p>
           </div>
 

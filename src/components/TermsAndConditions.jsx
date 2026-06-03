@@ -100,7 +100,7 @@ export default function TermsAndConditions({ onBack }) {
             <ul style={{ paddingLeft: '1.5rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
               <li>Email: <a href="mailto:junaidameerkhan555@gmail.com" style={{ color: t.sub }}>junaidameerkhan555@gmail.com</a></li>
               <li>Phone: +92 311 2467786</li>
-              <li>Location: Namal University Mianwali, Pakistan</li>
+              <li>Location: Lahore, Punjab, Pakistan</li>
             </ul>
           </Section>
 
